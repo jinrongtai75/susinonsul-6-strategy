@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>수시논술 6</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#fff; --ink:#14161a; --dim:#5b6472; --line:#e3e6eb;
+    --accent:#1f6feb; --warn:#b4530a; --warnbg:#fff6ed; --hot:#c22a2a; --hotbg:#fdf0f0;
+    --ok:#0f7a4f; --chip:#eef1f5;
+    --r:12px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#14161a; --card:#1c1f26; --ink:#e8eaee; --dim:#9aa4b2;
+      --line:#2b3038; --accent:#5b9bff; --warn:#e0a366; --warnbg:#2a2018;
+      --hot:#ff8a8a; --hotbg:#2c1a1a; --ok:#5cc79a; --chip:#262b33;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14161a; --card:#1c1f26; --ink:#e8eaee; --dim:#9aa4b2; --line:#2b3038;
+    --accent:#5b9bff; --warn:#e0a366; --warnbg:#2a2018;
+    --hot:#ff8a8a; --hotbg:#2c1a1a; --ok:#5cc79a; --chip:#262b33;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
+  .wrap{max-width:940px;margin:0 auto;padding:18px 14px 60px}
+
+  header h1{font-size:1.45rem;margin:0 0 4px;letter-spacing:-.02em}
+  header p{margin:0;color:var(--dim);font-size:.86rem}
+
+  /* 탭 */
+  nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);
+    padding:12px 0 10px;margin:14px 0 0;border-bottom:1px solid var(--line);
+    display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  nav.tabs button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);
+    color:var(--dim);padding:7px 13px;border-radius:99px;font-size:.87rem;cursor:pointer;
+    font-family:inherit;white-space:nowrap}
+  nav.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);
+    color:#fff;font-weight:600}
+
+  section{margin-top:18px}
+  h2{font-size:1.05rem;margin:22px 0 10px;letter-spacing:-.01em}
+
+  /* 일정 요약 표 */
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;
+    border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:.87rem}
+  th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--chip);font-weight:600;font-size:.8rem;color:var(--dim);
+    white-space:nowrap;position:sticky;top:0}
+  tbody tr:last-child td{border-bottom:0}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .u{font-weight:600}
+  .dept{color:var(--dim);font-size:.82rem}
+
+  /* 대학 카드 */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    padding:16px;margin-bottom:14px}
+  .card h3{margin:0 0 2px;font-size:1.06rem;letter-spacing:-.01em}
+  .card h3 small{font-weight:400;color:var(--dim);font-size:.8rem;margin-left:6px}
+  .meta{color:var(--dim);font-size:.82rem;margin-bottom:12px}
+
+  dl.kv{display:grid;grid-template-columns:5.6rem 1fr;gap:7px 12px;margin:0;font-size:.88rem}
+  dl.kv dt{color:var(--dim);font-size:.82rem}
+  dl.kv dd{margin:0}
+  @media(max-width:520px){
+    dl.kv{grid-template-columns:1fr;gap:2px}
+    dl.kv dt{margin-top:8px;font-weight:600}
+    dl.kv dd{padding-bottom:2px}
+  }
+  .raw{color:var(--dim);font-size:.8rem;display:block;margin-top:2px}
+
+  .note{background:var(--warnbg);border-left:3px solid var(--warn);
+    padding:9px 11px;border-radius:6px;font-size:.83rem;margin-top:12px;color:var(--ink)}
+  .note.hot{background:var(--hotbg);border-left-color:var(--hot)}
+  .note b{color:var(--warn)}
+  .note.hot b{color:var(--hot)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 0}
+  .chip{background:var(--chip);border-radius:99px;padding:3px 9px;font-size:.76rem;color:var(--dim)}
+  .chip.on{background:var(--accent);color:#fff}
+
+  /* 자료 목록 */
+  .files{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--card)}
+  .files .grp{padding:7px 12px;background:var(--chip);font-size:.76rem;font-weight:600;
+    color:var(--dim);border-bottom:1px solid var(--line)}
+  .f{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .f:last-child{border-bottom:0}
+  .f .nm{flex:1;min-width:0;font-size:.86rem;word-break:break-word}
+  .f .sz{color:var(--dim);font-size:.75rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .f a{flex:0 0 auto;text-decoration:none;font-size:.8rem;padding:5px 10px;border-radius:7px;
+    border:1px solid var(--line);color:var(--accent);background:var(--bg);white-space:nowrap}
+  .f a.dl{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .f a:active{opacity:.7}
+  .fact{display:flex;gap:5px}
+
+  footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--line);
+    color:var(--dim);font-size:.78rem}
+  footer p{margin:5px 0}
+  a{color:var(--accent)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>2027 수시논술 · 확정 6개 대학</h1>
+    <p id="built"></p>
+  </header>
+
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+
+  <div id="view"></div>
+
+  <footer>
+    <p><b>출처</b> — 각 대학 2027학년도 수시 모집요강 PDF 원문. 경쟁률은 전년도(2026학년도) 실적으로,
+       출처 유형(공식공시/언론보도)을 항목마다 표시했습니다.</p>
+    <p><b>주의</b> — 모집요강은 정정공고가 날 수 있습니다. 최종 확인은 각 대학 입학처 공고를 따르세요.
+       고사장·개인별 고사시간은 대학별 발표일 이후 반드시 재확인이 필요합니다.</p>
+    <p><b>원서접수</b> — 6개 대학 모두 <a href="https://www.jinhakapply.com/" target="_blank" rel="noopener">진학어플라이</a>에서 접수.
+       수시 6장 제한 / 동일 대학 논술전형 복수지원 불가.</p>
+    <p>이 페이지에는 성적·지원전략 등 개인정보가 포함되지 않습니다.</p>
+  </footer>
+</div>
+
+<script src="data.js?v=66e0632e20"></script>
+<script>
+(function(){
+  var D = window.DATA, U = D.universities, F = D.files;
+  document.getElementById('built').textContent =
+    '모집요강 원문 대조 · 자료 ' + Object.keys(F).reduce(function(n,k){return n+F[k].length},0) +
+    '개 · 갱신 ' + D.meta.built_at;
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function kb(n){ return n>=1048576 ? (n/1048576).toFixed(1)+' MB' : Math.round(n/1024)+' KB'; }
+  function wd(iso){ if(!iso) return ''; var d=new Date(iso+'T00:00:00');
+    return ['일','월','화','수','목','금','토'][d.getDay()]; }
+  function fdate(iso){ if(!iso) return '—';
+    var p=iso.split('-'); return p[1].replace(/^0/,'')+'/'+p[2].replace(/^0/,'')+'('+wd(iso)+')'; }
+
+  /* ── 일정 한눈에 ─────────────────────────── */
+  function overview(){
+    var rows = U.slice().sort(function(a,b){
+      return (a.exam.date||'').localeCompare(b.exam.date||''); }).map(function(u){
+      var c = u.competition, r = '';
+      if (c){
+        var d = c.dept || c.자연계_소계;
+        if (c.dept_multi) r = c.dept_multi.경쟁률['2026'].toFixed(1)+':1';
+        else if (d) r = (d.경쟁률).toFixed(1)+':1';
+      }
+      var real = '';
+      if (c && c.dept_multi) real = c.dept_multi.최저충족_실질경쟁률_2026.toFixed(1)+':1';
+      else if (c && c.자연계_소계) real = c.자연계_소계.실경쟁률.toFixed(1)+':1';
+
+      return '<tr>'+
+        '<td class="num">'+fdate(u.exam.date)+'</td>'+
+        '<td><span class="u">'+esc(u.name.replace('학교',''))+'</span>'+
+            '<div class="dept">'+esc(u.dept.name)+'</div></td>'+
+        '<td>'+esc(u.exam.slot || (u.exam.time?u.exam.time:'개인별 지정'))+'</td>'+
+        '<td class="num">'+esc(u.dept.quota)+'명</td>'+
+        '<td>'+esc(shortScope(u))+'</td>'+
+        '<td>'+esc(shortMin(u))+'</td>'+
+        '<td class="num">'+esc(r||'—')+(real?'<div class="dept">실질 '+esc(real)+'</div>':'')+'</td>'+
+        '<td class="num">'+fdate(u.result.date)+'</td>'+
+      '</tr>';
+    }).join('');
+
+    return '<section>'+
+      '<h2>고사일 순서</h2>'+
+      '<div class="scroll"><table><thead><tr>'+
+      '<th>고사일</th><th>대학 · 학과</th><th>교시</th><th>모집</th>'+
+      '<th>수학 범위</th><th>수능최저</th><th>전년 경쟁률</th><th>발표</th>'+
+      '</tr></thead><tbody>'+rows+'</tbody></table></div>'+
+      hilite()+
+    '</section>';
+  }
+
+  /* 요약 표에 넣을 짧은 라벨 — 원문은 상세 카드에 그대로 싣는다 */
+  var MIN_SHORT = {
+    korea:'4개 합 8', skku:'3개 합 6', hanyang:'3개 합 7',
+    cau:'3개 합 6', ajou:'3개 합 5', syu:'3개 합 5'
+  };
+  var SCOPE_SHORT = {
+    korea:'미적+기하+확통', skku:'수학Ⅰ·Ⅱ만', hanyang:'미적+기하+확통',
+    cau:'미적+확통 (기하 제외)', ajou:'미적분까지', syu:'미적분까지'
+  };
+  function shortMin(u){ return MIN_SHORT[u.id] || '있음'; }
+  function shortScope(u){ return SCOPE_SHORT[u.id] || (u.scope.pattern||''); }
+
+  function hilite(){
+    return '<div class="note hot"><b>★ 챙길 것</b><br>'+
+      '• <b>11/23~24 삼육대는 평일(월·화)</b> 고사입니다. 개인별 고사일·시간이 11/18 공지로 정해지고 <b>변경 불가</b>입니다.<br>'+
+      '• <b>12/6 아주대는 6곳 중 유일한 12월 고사</b>로, 나머지 5곳이 끝난 뒤에 봅니다. 마지막까지 대비 기간이 남습니다.<br>'+
+      '• <b>삼육대 약학과 수능최저만 조건이 다릅니다</b> — 수학은 <b>미적분 또는 기하</b>, 탐구는 <b>과탐</b>만 인정(사탐·확통 불인정).<br>'+
+      '• 아주대 약학과 전년 경쟁률 <b>708:1</b>(전국 논술 최고). 다만 수능최저가 있어 실질경쟁률은 크게 낮아집니다.<br>'+
+      '• 6개 대학 고사일이 <b>모두 다른 날</b>이라 일정 충돌은 없습니다.'+
+      '</div>';
+  }
+
+  /* ── 대학 상세 ─────────────────────────── */
+  function detail(u){
+    var h = '<section><div class="card">'+
+      '<h3>'+esc(u.name)+' '+esc(u.dept.name)+
+        '<small>'+esc(u.admission_type||'')+'</small></h3>'+
+      '<div class="meta">'+esc(u.dept.college||'')+
+        (u.dept.college?' · ':'')+'모집 '+esc(u.dept.quota)+'명'+
+        (u.admissions_url?' · <a href="'+esc(u.admissions_url)+'" target="_blank" rel="noopener">입학처</a>':'')+
+      '</div>';
+
+    h += '<dl class="kv">';
+    h += row('고사일', '<b>'+fdate(u.exam.date)+'</b> '+
+              esc(u.exam.slot || u.exam.time || '개인별 지정') +
+              (u.exam.duration_min?' · '+u.exam.duration_min+'분':''),
+              u.exam.raw);
+    h += row('고사장', esc(u.exam.venue||'—'), u.exam.venue_detail);
+    h += row('고사장 발표', esc(u.venue_announce||'—'));
+    h += row('시험범위', '<b>'+esc(u.scope.pattern||'')+'</b>', u.scope.raw);
+    h += row('문항·시간', esc(u.scope.items||'—'));
+    h += row('수능최저', esc(u.min_csat.raw));
+    h += row('반영비율', esc(u.weights.raw));
+    h += row('원서접수', esc(u.schedule.application||'—'),
+             u.schedule.document ? '서류: '+u.schedule.document : null);
+    h += row('합격발표', '<b>'+fdate(u.result.date)+'</b> '+
+             esc(u.result.time||'')+
+             '<span class="raw">'+esc(u.result.raw)+'</span>');
+    h += '</dl>';
+
+    /* 경쟁률 */
+    var c = u.competition;
+    if (c){
+      h += '<h2 style="font-size:.92rem;margin:16px 0 7px">전년 경쟁률 <span class="chip">'+
+           esc(c.학년도)+'학년도 · '+esc(c.source_type)+'</span></h2>';
+      if (c.dept_multi){
+        var m=c.dept_multi;
+        h += '<div class="scroll"><table style="min-width:0"><thead><tr>'+
+          '<th>구분</th><th>2026</th><th>2025</th><th>2024</th></tr></thead><tbody>'+
+          '<tr><td>경쟁률</td><td class="num">'+m.경쟁률['2026']+':1</td>'+
+            '<td class="num">'+m.경쟁률['2025']+':1</td><td class="num">'+m.경쟁률['2024']+':1</td></tr>'+
+          '<tr><td>논술평균</td><td class="num">'+m.논술평균['2026']+'</td>'+
+            '<td class="num">'+m.논술평균['2025']+'</td><td class="num">'+m.논술평균['2024']+'</td></tr>'+
+          '<tr><td>수능최저 충족률</td><td class="num">'+m.수능최저충족률_2026+'%</td><td></td><td></td></tr>'+
+          '<tr><td><b>실질경쟁률</b></td><td class="num"><b>'+m.최저충족_실질경쟁률_2026+':1</b></td>'+
+            '<td></td><td></td></tr>'+
+          '</tbody></table></div>';
+      } else {
+        var d = c.dept || c.자연계_소계;
+        if (d){
+          h += '<dl class="kv">';
+          if (d.모집인원!=null) h += row('모집인원', d.모집인원+'명');
+          if (d.모집인원_2026!=null) h += row('모집인원',
+              d.모집인원_2026+'명 (2026) → <b>'+d.모집인원_2027+'명 (2027)</b>');
+          if (d.지원자!=null) h += row('지원자', d.지원자.toLocaleString()+'명');
+          h += row('경쟁률', '<b>'+d.경쟁률+':1</b>');
+          if (d.실경쟁률!=null) h += row('실질경쟁률', '<b>'+d.실경쟁률+':1</b>'+
+              (d.수능최저미충족?'<span class="raw">수능최저 미충족 '+d.수능최저미충족.toLocaleString()+'명 제외 후</span>':''));
+          h += '</dl>';
+        }
+      }
+      if (c.전체 && c.전체.최저충족률!=null){
+        h += '<div class="note">전형 전체 수능최저 충족률 <b>'+c.전체.최저충족률+'%</b>'+
+             (c.전체.실질경쟁률 ? ' → 명목 '+c.전체.경쟁률+':1 이 실질 <b>'+c.전체.실질경쟁률+':1</b>' : '')+
+             '</div>';
+      }
+      if (c.note) h += '<div class="note hot">'+esc(c.note)+'</div>';
+      if (c.caution || c._caution) h += '<div class="note">'+esc(c.caution||c._caution)+'</div>';
+      h += '<p class="raw">출처: '+esc(c.source||'')+
+           (c.source_url?' · <a href="'+esc(c.source_url)+'" target="_blank" rel="noopener">원문</a>':'')+'</p>';
+    } else {
+      h += '<div class="note">전년도 학과별 경쟁률 실적이 확인되지 않았습니다.</div>';
+    }
+
+    if (u.scope.note)   h += '<div class="note"><b>범위</b> '+esc(u.scope.note)+'</div>';
+    if (u.min_csat.note)h += '<div class="note"><b>수능최저</b> '+esc(u.min_csat.note)+'</div>';
+    if (u.weights.note) h += '<div class="note"><b>반영</b> '+esc(u.weights.note)+'</div>';
+    if (u.exam.note)    h += '<div class="note"><b>고사</b> '+esc(u.exam.note)+'</div>';
+    if (u.warning)      h += '<div class="note hot"><b>주의</b> '+esc(u.warning)+'</div>';
+
+    h += '</div>';
+
+    /* 자료 */
+    h += files(u.folder);
+    return h + '</section>';
+  }
+
+  function row(k, v, raw){
+    return '<dt>'+esc(k)+'</dt><dd>'+v+
+      (raw?'<span class="raw">'+esc(raw)+'</span>':'')+'</dd>';
+  }
+
+  var ORDER = ['기출문제','문항카드','모의논술','해설·채점','논술가이드북','모집요강'];
+  function files(folder){
+    var list = F[folder] || [];
+    if (!list.length) return '';
+    var by = {};
+    list.forEach(function(f){ (by[f.kind]=by[f.kind]||[]).push(f); });
+
+    var h = '<h2>자료 다운로드 <span class="chip">'+list.length+'개</span></h2>'+
+            '<div class="files">';
+    ORDER.forEach(function(k){
+      if (!by[k]) return;
+      h += '<div class="grp">'+esc(k)+' · '+by[k].length+'</div>';
+      by[k].forEach(function(f){
+        var p = encodeURI(f.path);
+        h += '<div class="f">'+
+          '<div class="nm">'+esc(f.name.replace(/\.pdf$/i,''))+'</div>'+
+          '<div class="sz">'+kb(f.size)+'</div>'+
+          '<div class="fact">'+
+            '<a href="'+p+'" target="_blank" rel="noopener">열기</a>'+
+            '<a class="dl" href="'+p+'" download>받기</a>'+
+          '</div>'+
+        '</div>';
+      });
+    });
+    return h + '</div>';
+  }
+
+  /* ── 탭 ─────────────────────────── */
+  var TABS = [{id:'all', label:'일정 한눈에'}].concat(U.map(function(u){
+    return {id:u.id, label:u.name.replace('학교','')};
+  }));
+
+  var nav = document.getElementById('tabs'), view = document.getElementById('view');
+  TABS.forEach(function(t){
+    var b = document.createElement('button');
+    b.textContent = t.label; b.setAttribute('role','tab'); b.dataset.id = t.id;
+    b.onclick = function(){ go(t.id); };
+    nav.appendChild(b);
+  });
+
+  function go(id){
+    [].forEach.call(nav.children, function(b){
+      b.setAttribute('aria-selected', b.dataset.id===id ? 'true':'false'); });
+    if (id==='all') view.innerHTML = overview();
+    else {
+      var u = U.filter(function(x){return x.id===id;})[0];
+      view.innerHTML = u ? detail(u) : '';
+    }
+    try{ localStorage.setItem('tab6', id); }catch(e){}
+    if (location.hash.slice(1)!==id) history.replaceState(null,'','#'+id);
+    window.scrollTo(0,0);
+  }
+
+  var init = location.hash.slice(1);
+  if (!init){ try{ init = localStorage.getItem('tab6')||''; }catch(e){} }
+  if (!TABS.some(function(t){return t.id===init;})) init='all';
+  go(init);
+  window.addEventListener('hashchange', function(){
+    var id=location.hash.slice(1);
+    if (TABS.some(function(t){return t.id===id;})) go(id);
+  });
+})();
+</script>
+</body>
+</html>
