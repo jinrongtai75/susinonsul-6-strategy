@@ -64,6 +64,26 @@
   .card h3 small{font-weight:400;color:var(--dim);font-size:.8rem;margin-left:6px}
   .meta{color:var(--dim);font-size:.82rem;margin-bottom:12px}
 
+  /* ★ 내 학과 고사시각 — 카드 최상단 강조 블록 */
+  .when{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:var(--chip);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;margin:0 0 14px}
+  .when-d{font-size:1.12rem;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+  .when-t{display:flex;align-items:baseline;gap:7px;white-space:nowrap}
+  .when-t b{font-size:1.75rem;font-weight:700;letter-spacing:-.03em;line-height:1;
+    font-variant-numeric:tabular-nums;color:var(--accent)}
+  .when-t b.tbd{font-size:1.15rem;color:var(--warn)}
+  .when-t span{font-size:.8rem;color:var(--dim);font-weight:600}
+  .when-x{flex:1 1 100%;font-size:.82rem;color:var(--dim)}
+
+  /* 요약표 시각 칸 */
+  td.tm{white-space:nowrap;line-height:1.35}
+  td.tm .clock{font-size:1.06rem;font-variant-numeric:tabular-nums;
+    letter-spacing:-.02em;color:var(--accent)}
+  td.tm small{display:block;font-size:.72rem;color:var(--dim)}
+  td.tm small.slot{font-size:.7rem;opacity:.8}
+  td.tm .tbd{font-weight:600;color:var(--warn);font-size:.86rem}
+
   dl.kv{display:grid;grid-template-columns:5.6rem 1fr;gap:7px 12px;margin:0;font-size:.88rem}
   dl.kv dt{color:var(--dim);font-size:.82rem}
   dl.kv dd{margin:0}
@@ -127,7 +147,7 @@
   </footer>
 </div>
 
-<script src="data.js?v=66e0632e20"></script>
+<script src="data.js?v=86aab26f98"></script>
 <script>
 (function(){
   var D = window.DATA, U = D.universities, F = D.files;
@@ -161,7 +181,7 @@
         '<td class="num">'+fdate(u.exam.date)+'</td>'+
         '<td><span class="u">'+esc(u.name.replace('학교',''))+'</span>'+
             '<div class="dept">'+esc(u.dept.name)+'</div></td>'+
-        '<td>'+esc(u.exam.slot || (u.exam.time?u.exam.time:'개인별 지정'))+'</td>'+
+        '<td class="tm">'+timeCell(u)+'</td>'+
         '<td class="num">'+esc(u.dept.quota)+'명</td>'+
         '<td>'+esc(shortScope(u))+'</td>'+
         '<td>'+esc(shortMin(u))+'</td>'+
@@ -173,7 +193,7 @@
     return '<section>'+
       '<h2>고사일 순서</h2>'+
       '<div class="scroll"><table><thead><tr>'+
-      '<th>고사일</th><th>대학 · 학과</th><th>교시</th><th>모집</th>'+
+      '<th>고사일</th><th>대학 · 학과</th><th>고사시각</th><th>모집</th>'+
       '<th>수학 범위</th><th>수능최저</th><th>전년 경쟁률</th><th>발표</th>'+
       '</tr></thead><tbody>'+rows+'</tbody></table></div>'+
       hilite()+
@@ -191,6 +211,23 @@
   };
   function shortMin(u){ return MIN_SHORT[u.id] || '있음'; }
   function shortScope(u){ return SCOPE_SHORT[u.id] || (u.scope.pattern||''); }
+
+  /* 내 학과 고사시각 — 시각을 크게, 무슨 시각인지(입실/시작)를 아래에 */
+  function timeCell(u){
+    var m = u.exam.my || {};
+    if (!m.clock)
+      return '<span class="tbd">개인별 지정</span><small>11/18 공지</small>';
+    return '<b class="clock">'+esc(m.clock)+'</b>'+
+           '<small>'+esc(m.kind==='입실완료' ? '입실완료' : '시험시작')+'</small>'+
+           '<small class="slot">'+esc(slotOnly(m.label))+'</small>';
+  }
+  /* "오후조 · 12:30 입실완료" → "오후조", "2교시 · 14:00~16:00" → "2교시".
+     조·교시가 없는 대학(아주대)은 시각만 남으므로 빈 문자열을 준다. */
+  function slotOnly(label){
+    if (!label) return '';
+    var p = label.split('·')[0].trim();
+    return /(교시|조|오전|오후)/.test(p) ? p : '';
+  }
 
   function hilite(){
     return '<div class="note hot"><b>★ 챙길 것</b><br>'+
@@ -212,11 +249,23 @@
         (u.admissions_url?' · <a href="'+esc(u.admissions_url)+'" target="_blank" rel="noopener">입학처</a>':'')+
       '</div>';
 
+    /* ★ 내 학과 고사시각 — 카드 맨 위에 크게 */
+    var m = u.exam.my || {};
+    h += '<div class="when">'+
+      '<div class="when-d">'+fdate(u.exam.date)+'</div>'+
+      '<div class="when-t">'+
+        (m.clock ? '<b>'+esc(m.clock)+'</b><span>'+
+                   esc(m.kind==='입실완료'?'입실완료':'시험시작')+'</span>'
+                 : '<b class="tbd">개인별 지정</b><span>11/18(수) 공지</span>')+
+      '</div>'+
+      '<div class="when-x">'+esc(m.detail||'')+'</div>'+
+    '</div>';
+    if (m.caveat) h += '<div class="note"><b>시각</b> '+esc(m.caveat)+'</div>';
+
     h += '<dl class="kv">';
-    h += row('고사일', '<b>'+fdate(u.exam.date)+'</b> '+
-              esc(u.exam.slot || u.exam.time || '개인별 지정') +
+    h += row('고사일', '<b>'+fdate(u.exam.date)+'</b> · '+esc(m.label||'')+
               (u.exam.duration_min?' · '+u.exam.duration_min+'분':''),
-              u.exam.raw);
+              '요강 원문(전 학과 조·교시): '+u.exam.raw);
     h += row('고사장', esc(u.exam.venue||'—'), u.exam.venue_detail);
     h += row('고사장 발표', esc(u.venue_announce||'—'));
     h += row('시험범위', '<b>'+esc(u.scope.pattern||'')+'</b>', u.scope.raw);
